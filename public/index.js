@@ -278,9 +278,15 @@ function checkSet() {
 }
 
 function checkAndClearSet() {
+  var selectedCards = getSelectedCards();
+  if (selectedCards.length !== 3) {
+    var $message = $('<div class="temp-message">Select exactly 3 cards</div>');
+    $('body').append($message);
+    $message.fadeIn(200).delay(1000).fadeOut(200, function() { $message.remove(); });
+    return false; // Don't proceed unless exactly 3 cards are selected
+  }
   if (checkSet()) {
     console.log(getClockTime());
-    var selectedCards = getSelectedCards();
     if (cards.length <= currentVariant.tableSize) {
       if (deck.length >= selectedCards.length) {
         fadeOutShapes(selectedCards, defaultAnimationTime);
@@ -432,7 +438,11 @@ function toggleCard($card) {
     if (holdCount > 0 && holdState != state) {
       return;
     }
-
+    
+    if (!state && getSelectedCards().length >= 3) {
+      return;
+    }
+    
     $card.toggleClass('selected');
     if ($card.hasClass('selected') && currentVariant.hasAutoComplete && autoComplete) {
       assistSet(); // only assist when autoComplete & selecting new
