@@ -280,6 +280,7 @@ function checkSet() {
 function checkAndClearSet() {
   var selectedCards = getSelectedCards();
   if (selectedCards.length !== 3) {
+    $('.selected').removeClass('selected');
     var $message = $('<div class="temp-message">Select exactly 3 cards</div>');
     $('body').append($message);
     $message.fadeIn(200).delay(1000).fadeOut(200, function() { $message.remove(); });
@@ -425,7 +426,16 @@ function release() {
   }
 
   if (holdCount == 0 && currentVariant.hasFastMode && fastMode) {
-    checkAndClearSet();
+    var selectedCards = getSelectedCards();
+    if (selectedCards.length === 3) {
+      checkAndClearSet();
+    } else if (selectedCards.length < 3) {
+    } else {
+      $('.selected').removeClass('selected');
+      var $message = $('<div class="temp-message">Select exactly 3 cards</div>');
+      $('body').append($message);
+      $message.fadeIn(200).delay(1000).fadeOut(200, function() { $message.remove(); });
+    }
   }
 }
 
@@ -440,6 +450,8 @@ function toggleCard($card) {
     }
     
     if (!state && getSelectedCards().length >= 3) {
+      $('.selected').removeClass('selected');
+      $card.addClass('selected');
       return;
     }
     
@@ -475,7 +487,17 @@ $(window).on("orientationchange resize", function() {layoutCardDivs(); rerender(
 $restart.on(clickStart, restart);
 $restartBig.on(clickStart, restart);
 
-$checkSet.on(clickStart, checkAndClearSet);
+$checkSet.on(clickStart, function() {
+  var selectedCards = getSelectedCards();
+  if (selectedCards.length !== 3) {
+    $('.selected').removeClass('selected');
+    var $message = $('<div class="temp-message">Select exactly 3 cards</div>');
+    $('body').append($message);
+    $message.fadeIn(200).delay(1000).fadeOut(200, function() { $message.remove(); });
+    return false;
+  }
+  checkAndClearSet();
+});
 
 $noSet.on(clickStart, help);
 $settings.on(clickStart, function() {$settingspage[0].style.display = "block";});
@@ -489,6 +511,14 @@ $body.on('keydown', function(evt) {
   var code = evt.originalEvent.code;
   var codes = ['KeyQ','KeyA','KeyZ','KeyW','KeyS','KeyX','KeyE','KeyD','KeyC','KeyR','KeyF','KeyV','KeyT','KeyG','KeyB','KeyY','KeyH','KeyN','KeyU','KeyJ','KeyM'];
   if (code == 'Enter' || code == 'Space') {
+    var selectedCards = getSelectedCards();
+    if (selectedCards.length !== 3) {
+      $('.selected').removeClass('selected');
+      var $message = $('<div class="temp-message">Select exactly 3 cards</div>');
+      $('body').append($message);
+      $message.fadeIn(200).delay(1000).fadeOut(200, function() { $message.remove(); });
+      return false;
+    }
     checkAndClearSet();
   } else if (evt.shiftKey && code == 'KeyL') {
     lightDark();
