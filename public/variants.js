@@ -166,7 +166,7 @@ set = {
   isSet: isStandardSet,
   findSet: naiveSetFinder(3, isStandardSet),
   findNextSet: naiveSetFinder(3, isStandardSet),
-  tableSize: 12,
+  tableSize: 18,
   tableIncrement: 3,
   hasFastMode: true,
   hasAutoComplete: true
