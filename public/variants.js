@@ -1,12 +1,13 @@
 function makeStandardDeck() {
   var deck = []
-  for(var i = 0; i < 81; ++i) {
+  for(var i = 0; i < 243; ++i) {
     var cur = i;
     var a = cur % 3; cur = (cur - a) / 3;
     var b = cur % 3; cur = (cur - b) / 3;
     var c = cur % 3; cur = (cur - c) / 3;
-    var z = cur;
-    deck.push({type: '3^4', count: a, color: b, shading: c, shape: z});
+    var z = cur % 3; cur = (cur - z) / 3;
+    var s = cur;
+    deck.push({type: '3^5', count: a, color: b, shading: c, shape: z, spin: s});
   }
   return shuffle(deck);
 }
@@ -20,7 +21,7 @@ function isNotNull(set) {
 
 function isStandardSet(set) {
   if (isNotNull(set) && set.length == 3) {
-    for (z of ['count', 'color', 'shading', 'shape']) {
+    for (z of ['count', 'color', 'shading', 'shape', 'spin']) {
       var a = set[0][z], b = set[1][z], c = set[2][z];
       if ((a + b + c) % 3 != 0) {
         return false;
@@ -35,7 +36,7 @@ function isSuperSet(set) {
   if (isNotNull(set) && set.length == 4) {
     for (var j of [1, 2, 3]) {
       var cnt = 0;
-      for (z of ['count', 'color', 'shading', 'shape']) {
+      for (z of ['count', 'color', 'shading', 'shape', 'spin']) {
         var a = set[0][z], b = set[j][z];
         var cd = set[1][z] + set[2][z] + set[3][z] - b;
         if ((a + b - cd) % 3 != 0) {
@@ -44,7 +45,7 @@ function isSuperSet(set) {
           ++cnt;
         }
       }
-      if (cnt == 4) {
+      if (cnt == 5) {
         return true;
       }
     }

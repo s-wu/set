@@ -271,3 +271,24 @@ svg .stripe.purple {
     text-decoration: none;
     cursor: pointer;
 }
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin-slow {
+  animation: spin 4s linear infinite;
+}
+
+.spin-medium {
+  animation: spin 2s linear infinite;
+}
+
+.spin-fast {
+  animation: spin 1s linear infinite;
+}
