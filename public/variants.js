@@ -20,7 +20,7 @@ function isNotNull(set) {
 
 function isStandardSet(set) {
   if (isNotNull(set) && set.length == 3) {
-    for (z of ['count', 'color', 'shading', 'shape']) {
+    for (var z of ['count', 'color', 'shading', 'shape']) {
       var a = set[0][z], b = set[1][z], c = set[2][z];
       if ((a + b + c) % 3 != 0) {
         return false;
@@ -35,7 +35,7 @@ function isSuperSet(set) {
   if (isNotNull(set) && set.length == 4) {
     for (var j of [1, 2, 3]) {
       var cnt = 0;
-      for (z of ['count', 'color', 'shading', 'shape']) {
+      for (var z of ['count', 'color', 'shading', 'shape']) {
         var a = set[0][z], b = set[j][z];
         var cd = set[1][z] + set[2][z] + set[3][z] - b;
         if ((a + b - cd) % 3 != 0) {
