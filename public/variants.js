@@ -175,7 +175,7 @@ hiddenset = {
   name: 'Hidden Set',
   makeDeck: function() {
     var ret = makeStandardDeck();
-    ret[0].hidden = true;
+    ret[ret.length - 1].hidden = true;
     return ret;
   },
   deal: deal,
