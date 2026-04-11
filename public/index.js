@@ -16,7 +16,7 @@ function getClockTime() {
 }
 
 function showClock(animationTime) {
-  $clock.html(getClockTime());
+  $clock.text(getClockTime());
   $clock.addClass('animating');
   $clock.fadeIn(animationTime);
   setTimeout(function() {
@@ -52,9 +52,9 @@ function endGame() {
 
 function setLabels() {
   if (deck.length > 0) {
-    $('#no-set-text').html('No Set');
+    $('#no-set-text').text('No Set');
   } else {
-    $('#no-set-text').html('Done!');
+    $('#no-set-text').text('Done!');
   }
 }
 
@@ -75,7 +75,7 @@ function rerender() {
 }
 
 function rewindClock(animationTime) {
-  var s = $clock.html();
+  var s = $clock.text();
   var time = 0;
   var step = animationTime / 40;
   function fiddle(str) {
@@ -94,7 +94,7 @@ function rewindClock(animationTime) {
   for (var i = 0; i < 30; ++i) {
     setTimeout(function() {
       s = fiddle(s);
-      $clock.html(s);
+      $clock.text(s);
     }.bind(i), time);
     time += step;
   }
@@ -102,7 +102,7 @@ function rewindClock(animationTime) {
     setTimeout(function() {
       var pattern = new RegExp('' + this, "g");
       s = s.replace(pattern, this - 1);
-      $clock.html(s);
+      $clock.text(s);
     }.bind(i), time);
     time += step;
   }
@@ -137,19 +137,34 @@ function newGame() {
   }
 }
 
+function isValidCardArray(arr) {
+  if (!Array.isArray(arr)) return false;
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i] != null && typeof arr[i] !== 'object') return false;
+  }
+  return true;
+}
+
 function loadGame() {
   var gameid = currentVariant.name;
   if (typeof(Storage) !== 'undefined' && localStorage.getItem(gameid) != null) {
-    var game = JSON.parse(localStorage.getItem(gameid));
-    if (game != null && game.cards != null) {
-      cards = game.cards;
-      deck = game.deck;
-      startTime = game.startTime;
-      makeCardDivs();
-      layoutCardDivs();
-      setLabels();
-      render();
-      return true;
+    try {
+      var game = JSON.parse(localStorage.getItem(gameid));
+      if (game != null && game.cards != null
+          && isValidCardArray(game.cards)
+          && isValidCardArray(game.deck)
+          && typeof game.startTime === 'number') {
+        cards = game.cards;
+        deck = game.deck;
+        startTime = game.startTime;
+        makeCardDivs();
+        layoutCardDivs();
+        setLabels();
+        render();
+        return true;
+      }
+    } catch(e) {
+      localStorage.removeItem(gameid);
     }
   }
   return false;
