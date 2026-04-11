@@ -18,18 +18,16 @@ function getClockTime() {
 function showClock(animationTime) {
   $clock.html(getClockTime());
   $clock.addClass('animating');
-  $clock.fadeIn(animationTime);
-  setTimeout(function() {
+  $clock.fadeIn(animationTime, function() {
     $clock.removeClass('animating');
-  }, animationTime);
+  });
 }
 
 function showRestartBig(animationTime) {
   $restartBig.addClass('animating');
-  $restartBig.fadeIn(animationTime);
-  setTimeout(function() {
+  $restartBig.fadeIn(animationTime, function() {
     $restartBig.removeClass('animating');
-  }, animationTime);
+  });
 }
 
 function endGame() {
@@ -242,23 +240,25 @@ function getSelectedCards() {
 }
 
 function fadeOutShapes(targets, animationTime) {
+  var $allShapes = $();
   for (var i of targets) {
-    $('.shape', getCardEl(i)).fadeOut(animationTime).addClass('animating');
+    $allShapes = $allShapes.add($('.shape', getCardEl(i)));
   }
-
-  setTimeout(function() {
-    $('.animating').removeClass('animating');
-  }, animationTime);
+  $allShapes.addClass('animating').fadeOut(animationTime, function() {
+    $(this).removeClass('animating');
+  });
+  return $allShapes;
 }
 
 function fadeOutCards(targets, animationTime) {
+  var $allCards = $();
   for (var i of targets) {
-    getCardEl(i).fadeOut(animationTime).addClass('animating');
+    $allCards = $allCards.add(getCardEl(i));
   }
-
-  setTimeout(function() {
-    $('.animating').removeClass('animating');
-  }, animationTime);
+  $allCards.addClass('animating').fadeOut(animationTime, function() {
+    $(this).removeClass('animating');
+  });
+  return $allCards;
 }
 
 function isSet(set) {
@@ -283,17 +283,15 @@ function checkAndClearSet() {
     var selectedCards = getSelectedCards();
     if (cards.length <= currentVariant.tableSize) {
       if (deck.length >= selectedCards.length) {
-        fadeOutShapes(selectedCards, defaultAnimationTime);
-        setTimeout(function() {
+        fadeOutShapes(selectedCards, defaultAnimationTime).promise().done(function() {
           for (var i of selectedCards) {
             cards[i] = deck.pop();
           }
           rerender();
           saveGame();
-        }, defaultAnimationTime);
+        });
       } else {
-        fadeOutCards(selectedCards, defaultAnimationTime);
-        setTimeout(function() {
+        fadeOutCards(selectedCards, defaultAnimationTime).promise().done(function() {
           for (var i of selectedCards) {
             if (deck.length > 0) {
               cards[i] = deck.pop();
@@ -315,11 +313,10 @@ function checkAndClearSet() {
           if (done) {
             endGame();
           }
-        }, defaultAnimationTime);
+        });
       }
     } else {
-      fadeOutCards(selectedCards, defaultAnimationTime);
-      setTimeout(function() {
+      fadeOutCards(selectedCards, defaultAnimationTime).promise().done(function() {
         selectedCards.sort(function(a, b) { return b - a; })
         for (var i of selectedCards) {
           cards.splice(i, 1);
@@ -331,7 +328,7 @@ function checkAndClearSet() {
         layoutCardDivs();// TODO: animate the cards into the new layout
         rerender();
         saveGame();
-      }, defaultAnimationTime);
+      });
     }
     $('.selected').removeClass('selected');
     resetHolds();
